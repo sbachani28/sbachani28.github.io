@@ -187,10 +187,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Which characters appear most often in Suits episode summaries, and how do mentions change by season?</p>
-<p>The data contain 134 TVmaze episode summaries across nine seasons. Each character counts once per summary when their first name appears. These counts measure mentions in summaries, not screen time.</p>
-<section id="prepare-the-data" class="level2">
-<h2 class="anchored" data-anchor-id="prepare-the-data">Prepare the data</h2>
+<p>Who gets mentioned the most in Suits episode summaries? Does that change from season to season?</p>
+<p>This project uses 134 episode summaries from TVmaze, covering all nine seasons. I checked for six characters by first name. A name counts once per summary, even if it shows up more than once. This tells us who the summaries mention. It doesn’t tell us how much screen time they get.</p>
+<section id="get-the-data-ready" class="level2">
+<h2 class="anchored" data-anchor-id="get-the-data-ready">Get the data ready</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -223,8 +223,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="which-characters-appear-most-often" class="level2">
-<h2 class="anchored" data-anchor-id="which-characters-appear-most-often">Which characters appear most often?</h2>
+<section id="who-gets-mentioned-the-most" class="level2">
+<h2 class="anchored" data-anchor-id="who-gets-mentioned-the-most">Who gets mentioned the most?</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>overall <span class="ot">&lt;-</span> mentions <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(character) <span class="sc">|&gt;</span></span>
@@ -234,8 +234,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">y =</span> <span class="fu">fct_reorder</span>(character, episodes))) <span class="sc">+</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"navy"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Harvey appears in the most episode summaries"</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Episode summaries mentioning the character (out of 134)"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Harvey gets mentioned the most"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Summaries with their name (out of 134)"</span>,</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Character"</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -246,10 +246,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Harvey gets mentioned the most, showing up in 123 of the 134 summaries. Mike comes next with 96, then Louis with 86. Rachel has 50, Jessica has 45, and Donna has 39. Some characters are in the show for more seasons than others, so they have more chances to be mentioned.</p>
+<p>Harvey is first with 123 of the 134 summaries. Mike is next with 96, followed by Louis with 86. Rachel has 50, Jessica has 45, and Donna has 39. Some characters stay on the show longer, which gives them more chances to show up in a summary.</p>
 </section>
-<section id="how-do-mentions-change-by-season" class="level2">
-<h2 class="anchored" data-anchor-id="how-do-mentions-change-by-season">How do mentions change by season?</h2>
+<section id="does-this-change-by-season" class="level2">
+<h2 class="anchored" data-anchor-id="does-this-change-by-season">Does this change by season?</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>by_season <span class="ot">&lt;-</span> mentions <span class="sc">|&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(character <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Harvey"</span>, <span class="st">"Mike"</span>, <span class="st">"Louis"</span>)) <span class="sc">|&gt;</span></span>
@@ -266,9 +266,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Character mentions change across seasons"</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Harvey, Mike, and Louis by season"</span>,</span>
 <span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Season"</span>,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Episode summaries mentioning the character (%)"</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Summaries with their name (%)"</span>,</span>
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Character"</span></span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -279,13 +279,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>The seasons have different numbers of episodes, so this plot uses percentages. Harvey shows up in at least 80% of the summaries each season. The biggest change is Mike: he goes from being mentioned in every summary in season 7 to none in season 8, then two out of ten in season 9. Louis gets mentioned most often in seasons 6 and 7, appearing in 15 out of 16 summaries in each.</p>
+<p>Some seasons have more episodes than others, so I used percentages to compare them. Harvey is in at least 80% of the summaries in every season. Mike has the biggest drop. He is in every summary in season 7, none in season 8, and two of the ten in season 9. Louis is at his highest in seasons 6 and 7, with 15 of the 16 summaries in each.</p>
 </section>
-<section id="sources" class="level2">
-<h2 class="anchored" data-anchor-id="sources">Sources</h2>
+<section id="where-the-data-came-from" class="level2">
+<h2 class="anchored" data-anchor-id="where-the-data-came-from">Where the data came from</h2>
 <ul>
 <li>TVmaze contributors. (n.d.). Suits episode information and summaries. Retrieved October 14, 2026, from the <a href="https://www.tvmaze.com/shows/172/suits/episodes">episode list</a> and <a href="https://api.tvmaze.com/shows/172/episodes">episode data API</a>.</li>
-<li>The CSV is a reformatted subset of TVmaze data, shared under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. See <a href="https://www.tvmaze.com/api#licensing">TVmaze’s licensing terms</a>.</li>
+<li>The CSV file uses selected fields from TVmaze’s data. The data are shared under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. See <a href="https://www.tvmaze.com/api#licensing">TVmaze’s licensing terms</a>.</li>
 </ul>
 
 

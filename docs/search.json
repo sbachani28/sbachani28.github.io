@@ -53,7 +53,7 @@
     "href": "suits.html",
     "title": "Who gets mentioned in Suits?",
     "section": "",
-    "text": "Which characters appear most often in Suits episode summaries, and how do mentions change by season?\nThe data contain 134 TVmaze episode summaries across nine seasons. Each character counts once per summary when their first name appears. These counts measure mentions in summaries, not screen time."
+    "text": "Who gets mentioned the most in Suits episode summaries? Does that change from season to season?\nThis project uses 134 episode summaries from TVmaze, covering all nine seasons. I checked for six characters by first name. A name counts once per summary, even if it shows up more than once. This tells us who the summaries mention. It doesn’t tell us how much screen time they get."
   },
   {
     "objectID": "suits.html#prepare-the-data",
@@ -82,5 +82,33 @@
     "title": "Who gets mentioned in Suits?",
     "section": "Sources",
     "text": "Sources\n\nTVmaze contributors. (n.d.). Suits episode information and summaries. Retrieved October 14, 2026, from the episode list and episode data API.\nThe CSV is a reformatted subset of TVmaze data, shared under CC BY-SA 4.0. See TVmaze’s licensing terms."
+  },
+  {
+    "objectID": "suits.html#get-the-data-ready",
+    "href": "suits.html#get-the-data-ready",
+    "title": "Who gets mentioned in Suits?",
+    "section": "Get the data ready",
+    "text": "Get the data ready\n\nlibrary(tidyverse)\n\nsuits &lt;- read_csv(\"data/suits_episodes.csv\")\n\nsuits &lt;- suits |&gt;\n  mutate(\n    text = str_replace_all(summary, \"&lt;[^&gt;]+&gt;\", \" \"),\n    text = str_to_lower(text),\n    season = str_extract(url, \"(?&lt;=suits-)\\\\d+(?=x)\")\n  )\n\n\nsuits &lt;- suits |&gt;\n  mutate(\n    Harvey = str_detect(text, \"\\\\bharvey\\\\b\"),\n    Mike = str_detect(text, \"\\\\bmike\\\\b\"),\n    Louis = str_detect(text, \"\\\\blouis\\\\b\"),\n    Donna = str_detect(text, \"\\\\bdonna\\\\b\"),\n    Jessica = str_detect(text, \"\\\\bjessica\\\\b\"),\n    Rachel = str_detect(text, \"\\\\brachel\\\\b\")\n  )\n\nmentions &lt;- suits |&gt;\n  select(season, Harvey, Mike, Louis, Donna, Jessica, Rachel) |&gt;\n  pivot_longer(\n    cols = Harvey:Rachel,\n    names_to = \"character\",\n    values_to = \"mentioned\"\n  )"
+  },
+  {
+    "objectID": "suits.html#who-gets-mentioned-the-most",
+    "href": "suits.html#who-gets-mentioned-the-most",
+    "title": "Who gets mentioned in Suits?",
+    "section": "Who gets mentioned the most?",
+    "text": "Who gets mentioned the most?\n\noverall &lt;- mentions |&gt;\n  group_by(character) |&gt;\n  summarise(episodes = sum(mentioned))\n\nggplot(overall, aes(x = episodes,\n                    y = fct_reorder(character, episodes))) +\n  geom_point(color = \"navy\", size = 3) +\n  labs(\n    title = \"Harvey gets mentioned the most\",\n    x = \"Summaries with their name (out of 134)\",\n    y = \"Character\"\n  )\n\n\n\n\n\n\n\n\nHarvey is first with 123 of the 134 summaries. Mike is next with 96, followed by Louis with 86. Rachel has 50, Jessica has 45, and Donna has 39. Some characters stay on the show longer, which gives them more chances to show up in a summary."
+  },
+  {
+    "objectID": "suits.html#does-this-change-by-season",
+    "href": "suits.html#does-this-change-by-season",
+    "title": "Who gets mentioned in Suits?",
+    "section": "Does this change by season?",
+    "text": "Does this change by season?\n\nby_season &lt;- mentions |&gt;\n  filter(character %in% c(\"Harvey\", \"Mike\", \"Louis\")) |&gt;\n  group_by(season, character) |&gt;\n  summarise(\n    episodes = n(),\n    mentions = sum(mentioned),\n    percent = 100 * mentions / episodes\n  )\n\nggplot(by_season,\n       aes(x = season, y = percent, color = character,\n           group = character)) +\n  geom_line() +\n  geom_point() +\n  labs(\n    title = \"Harvey, Mike, and Louis by season\",\n    x = \"Season\",\n    y = \"Summaries with their name (%)\",\n    color = \"Character\"\n  )\n\n\n\n\n\n\n\n\nSome seasons have more episodes than others, so I used percentages to compare them. Harvey is in at least 80% of the summaries in every season. Mike has the biggest drop. He is in every summary in season 7, none in season 8, and two of the ten in season 9. Louis is at his highest in seasons 6 and 7, with 15 of the 16 summaries in each."
+  },
+  {
+    "objectID": "suits.html#where-the-data-came-from",
+    "href": "suits.html#where-the-data-came-from",
+    "title": "Who gets mentioned in Suits?",
+    "section": "Where the data came from",
+    "text": "Where the data came from\n\nTVmaze contributors. (n.d.). Suits episode information and summaries. Retrieved October 14, 2026, from the episode list and episode data API.\nThe CSV file uses selected fields from TVmaze’s data. The data are shared under CC BY-SA 4.0. See TVmaze’s licensing terms."
   }
 ]
