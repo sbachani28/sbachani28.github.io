@@ -1,0 +1,100 @@
+---
+title: "Who gets mentioned in Suits?"
+format:
+  html:
+    theme: minty
+execute:
+  echo: true
+  message: false
+  warning: false
+---
+
+Which characters appear most often in Suits episode summaries, and how do mentions change by season?
+
+The data contain 134 TVmaze episode summaries across nine seasons. Each character counts once per summary when their first name appears. These counts measure mentions in summaries, not screen time.
+
+## Prepare the data
+
+```{r}
+library(tidyverse)
+
+suits <- read_csv("data/suits_episodes.csv")
+
+suits <- suits |>
+  mutate(
+    text = str_replace_all(summary, "<[^>]+>", " "),
+    text = str_to_lower(text),
+    season = str_extract(url, "(?<=suits-)\\d+(?=x)")
+  )
+```
+
+```{r}
+suits <- suits |>
+  mutate(
+    Harvey = str_detect(text, "\\bharvey\\b"),
+    Mike = str_detect(text, "\\bmike\\b"),
+    Louis = str_detect(text, "\\blouis\\b"),
+    Donna = str_detect(text, "\\bdonna\\b"),
+    Jessica = str_detect(text, "\\bjessica\\b"),
+    Rachel = str_detect(text, "\\brachel\\b")
+  )
+
+mentions <- suits |>
+  select(season, Harvey, Mike, Louis, Donna, Jessica, Rachel) |>
+  pivot_longer(
+    cols = Harvey:Rachel,
+    names_to = "character",
+    values_to = "mentioned"
+  )
+```
+
+## Which characters appear most often?
+
+```{r}
+overall <- mentions |>
+  group_by(character) |>
+  summarise(episodes = sum(mentioned))
+
+ggplot(overall, aes(x = episodes,
+                    y = fct_reorder(character, episodes))) +
+  geom_point(color = "navy", size = 3) +
+  labs(
+    title = "Harvey appears in the most episode summaries",
+    x = "Episode summaries mentioning the character (out of 134)",
+    y = "Character"
+  )
+```
+
+Harvey gets mentioned the most, showing up in 123 of the 134 summaries. Mike comes next with 96, then Louis with 86. Rachel has 50, Jessica has 45, and Donna has 39. Some characters are in the show for more seasons than others, so they have more chances to be mentioned.
+
+## How do mentions change by season?
+
+```{r}
+by_season <- mentions |>
+  filter(character %in% c("Harvey", "Mike", "Louis")) |>
+  group_by(season, character) |>
+  summarise(
+    episodes = n(),
+    mentions = sum(mentioned),
+    percent = 100 * mentions / episodes
+  )
+
+ggplot(by_season,
+       aes(x = season, y = percent, color = character,
+           group = character)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Character mentions change across seasons",
+    x = "Season",
+    y = "Episode summaries mentioning the character (%)",
+    color = "Character"
+  )
+```
+
+The seasons have different numbers of episodes, so this plot uses percentages. Harvey shows up in at least 80% of the summaries each season. The biggest change is Mike: he goes from being mentioned in every summary in season 7 to none in season 8, then two out of ten in season 9. Louis gets mentioned most often in seasons 6 and 7, appearing in 15 out of 16 summaries in each.
+
+## Sources
+
+- TVmaze contributors. (n.d.). Suits episode information and summaries. Retrieved October 14, 2026, from the [episode list](https://www.tvmaze.com/shows/172/suits/episodes) and [episode data API](https://api.tvmaze.com/shows/172/episodes).
+- The CSV is a reformatted subset of TVmaze data, shared under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). See [TVmaze's licensing terms](https://www.tvmaze.com/api#licensing).

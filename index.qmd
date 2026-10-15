@@ -16,7 +16,7 @@ about:
 
 Hi, I'm Sanskar Bachani. I'm a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.
 
-This site has two plots made with TidyTuesday data. You can find the [code for this site on GitHub](https://github.com/sbachani28/portfolio).
+This site has my data projects for the class. You can find the [code for this site on GitHub](https://github.com/sbachani28/portfolio).
 
 ## Data Viz
 
@@ -28,4 +28,8 @@ How did player ages differ across men's basketball teams in 2016?
 
 Do films with bigger budgets earn more at the box office?
 
-Each page includes the R code for its plot.
+### [Suits](suits.qmd)
+
+Which characters get mentioned most in episode summaries, and how does that change by season?
+
+Each page includes the R code for its plots.

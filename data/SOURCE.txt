@@ -1,0 +1,8 @@
+Source: TVmaze contributors, Suits episode information and summaries.
+Retrieved: October 14, 2026.
+API: https://api.tvmaze.com/shows/172/episodes
+Show: https://www.tvmaze.com/shows/172/suits/episodes
+License: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/
+API license statement: https://www.tvmaze.com/api#licensing
+Changes: The JSON episode records were exported to CSV, keeping id, name, url, airdate, summary. Text values are unchanged. Specials are excluded by the source endpoint.
+Rows: 134; one per episode. No summaries are missing.

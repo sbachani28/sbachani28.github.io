@@ -14,6 +14,27 @@
     "text": "Sources\n\nTidyTuesday\nCSV data\nOriginal data on Kaggle\nSports Reference"
   },
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Sanskar Bachani",
+    "section": "",
+    "text": "Hi, I’m Sanskar Bachani. I’m a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.\nThis site has my data projects for the class. You can find the code for this site on GitHub."
+  },
+  {
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "Sanskar Bachani",
+    "section": "",
+    "text": "Hi, I’m Sanskar Bachani. I’m a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.\nThis site has my data projects for the class. You can find the code for this site on GitHub."
+  },
+  {
+    "objectID": "index.html#data-viz",
+    "href": "index.html#data-viz",
+    "title": "Sanskar Bachani",
+    "section": "Data Viz",
+    "text": "Data Viz\n\nOlympic Basketball\nHow did player ages differ across men’s basketball teams in 2016?\n\n\nMovie Budgets\nDo films with bigger budgets earn more at the box office?\n\n\nSuits\nWhich characters get mentioned most in episode summaries, and how does that change by season?\nEach page includes the R code for its plots."
+  },
+  {
     "objectID": "movies.html",
     "href": "movies.html",
     "title": "Movie Budgets",
@@ -28,24 +49,38 @@
     "text": "Sources\n\nTidyTuesday\nCSV data\nOriginal data from The Numbers"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Sanskar Bachani",
+    "objectID": "suits.html",
+    "href": "suits.html",
+    "title": "Who gets mentioned in Suits?",
     "section": "",
-    "text": "Hi, I’m Sanskar Bachani. I’m a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.\nThis site has two plots made with TidyTuesday data. You can find the code for this site on GitHub."
+    "text": "Which characters appear most often in Suits episode summaries, and how do mentions change by season?\nThe data contain 134 TVmaze episode summaries across nine seasons. Each character counts once per summary when their first name appears. These counts measure mentions in summaries, not screen time."
   },
   {
-    "objectID": "index.html#about-me",
-    "href": "index.html#about-me",
-    "title": "Sanskar Bachani",
-    "section": "",
-    "text": "Hi, I’m Sanskar Bachani. I’m a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.\nThis site has two plots made with TidyTuesday data. You can find the code for this site on GitHub."
+    "objectID": "suits.html#prepare-the-data",
+    "href": "suits.html#prepare-the-data",
+    "title": "Who gets mentioned in Suits?",
+    "section": "Prepare the data",
+    "text": "Prepare the data\n\nlibrary(tidyverse)\n\nsuits &lt;- read_csv(\"data/suits_episodes.csv\")\n\nsuits &lt;- suits |&gt;\n  mutate(\n    text = str_replace_all(summary, \"&lt;[^&gt;]+&gt;\", \" \"),\n    text = str_to_lower(text),\n    season = str_extract(url, \"(?&lt;=suits-)\\\\d+(?=x)\")\n  )\n\n\nsuits &lt;- suits |&gt;\n  mutate(\n    Harvey = str_detect(text, \"\\\\bharvey\\\\b\"),\n    Mike = str_detect(text, \"\\\\bmike\\\\b\"),\n    Louis = str_detect(text, \"\\\\blouis\\\\b\"),\n    Donna = str_detect(text, \"\\\\bdonna\\\\b\"),\n    Jessica = str_detect(text, \"\\\\bjessica\\\\b\"),\n    Rachel = str_detect(text, \"\\\\brachel\\\\b\")\n  )\n\nmentions &lt;- suits |&gt;\n  select(season, Harvey, Mike, Louis, Donna, Jessica, Rachel) |&gt;\n  pivot_longer(\n    cols = Harvey:Rachel,\n    names_to = \"character\",\n    values_to = \"mentioned\"\n  )"
   },
   {
-    "objectID": "index.html#data-viz",
-    "href": "index.html#data-viz",
-    "title": "Sanskar Bachani",
-    "section": "Data Viz",
-    "text": "Data Viz\n\nOlympic Basketball\nHow did player ages differ across men’s basketball teams in 2016?\n\n\nMovie Budgets\nDo films with bigger budgets earn more at the box office?\nEach page includes the R code for its plot."
+    "objectID": "suits.html#which-characters-appear-most-often",
+    "href": "suits.html#which-characters-appear-most-often",
+    "title": "Who gets mentioned in Suits?",
+    "section": "Which characters appear most often?",
+    "text": "Which characters appear most often?\n\noverall &lt;- mentions |&gt;\n  group_by(character) |&gt;\n  summarise(episodes = sum(mentioned))\n\nggplot(overall, aes(x = episodes,\n                    y = fct_reorder(character, episodes))) +\n  geom_point(color = \"navy\", size = 3) +\n  labs(\n    title = \"Harvey appears in the most episode summaries\",\n    x = \"Episode summaries mentioning the character (out of 134)\",\n    y = \"Character\"\n  )\n\n\n\n\n\n\n\n\nHarvey gets mentioned the most, showing up in 123 of the 134 summaries. Mike comes next with 96, then Louis with 86. Rachel has 50, Jessica has 45, and Donna has 39. Some characters are in the show for more seasons than others, so they have more chances to be mentioned."
+  },
+  {
+    "objectID": "suits.html#how-do-mentions-change-by-season",
+    "href": "suits.html#how-do-mentions-change-by-season",
+    "title": "Who gets mentioned in Suits?",
+    "section": "How do mentions change by season?",
+    "text": "How do mentions change by season?\n\nby_season &lt;- mentions |&gt;\n  filter(character %in% c(\"Harvey\", \"Mike\", \"Louis\")) |&gt;\n  group_by(season, character) |&gt;\n  summarise(\n    episodes = n(),\n    mentions = sum(mentioned),\n    percent = 100 * mentions / episodes\n  )\n\nggplot(by_season,\n       aes(x = season, y = percent, color = character,\n           group = character)) +\n  geom_line() +\n  geom_point() +\n  labs(\n    title = \"Character mentions change across seasons\",\n    x = \"Season\",\n    y = \"Episode summaries mentioning the character (%)\",\n    color = \"Character\"\n  )\n\n\n\n\n\n\n\n\nThe seasons have different numbers of episodes, so this plot uses percentages. Harvey shows up in at least 80% of the summaries each season. The biggest change is Mike: he goes from being mentioned in every summary in season 7 to none in season 8, then two out of ten in season 9. Louis gets mentioned most often in seasons 6 and 7, appearing in 15 out of 16 summaries in each."
+  },
+  {
+    "objectID": "suits.html#sources",
+    "href": "suits.html#sources",
+    "title": "Who gets mentioned in Suits?",
+    "section": "Sources",
+    "text": "Sources\n\nTVmaze contributors. (n.d.). Suits episode information and summaries. Retrieved October 14, 2026, from the episode list and episode data API.\nThe CSV is a reformatted subset of TVmaze data, shared under CC BY-SA 4.0. See TVmaze’s licensing terms."
   }
 ]
