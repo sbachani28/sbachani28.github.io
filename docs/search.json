@@ -14,74 +14,11 @@
     "text": "Sources\n\nTidyTuesday\nCSV data\nOriginal data on Kaggle\nSports Reference"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Sanskar Bachani",
-    "section": "",
-    "text": "Hi, I’m Sanskar Bachani. I’m a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.\nThis site has my data projects for the class. You can find the code for this site on GitHub."
-  },
-  {
-    "objectID": "index.html#about-me",
-    "href": "index.html#about-me",
-    "title": "Sanskar Bachani",
-    "section": "",
-    "text": "Hi, I’m Sanskar Bachani. I’m a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.\nThis site has my data projects for the class. You can find the code for this site on GitHub."
-  },
-  {
-    "objectID": "index.html#data-viz",
-    "href": "index.html#data-viz",
-    "title": "Sanskar Bachani",
-    "section": "Data Viz",
-    "text": "Data Viz\n\nOlympic Basketball\nHow did player ages differ across men’s basketball teams in 2016?\n\n\nMovie Budgets\nDo films with bigger budgets earn more at the box office?\n\n\nSuits\nWhich characters get mentioned most in episode summaries, and how does that change by season?\nEach page includes the R code for its plots."
-  },
-  {
-    "objectID": "movies.html",
-    "href": "movies.html",
-    "title": "Movie Budgets",
-    "section": "",
-    "text": "Do films with bigger budgets earn more at the box office? I used TidyTuesday data from October 23, 2018 to look at film budgets and ticket sales. The data come from The Numbers.\nI removed one repeated row and kept films with box office totals above zero. This leaves 3,364 films from 1936 to 2018. The dollar amounts do not account for inflation.\nlibrary(tidyverse)\n\nmovies &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2018/2018-10-23/movie_profit.csv')\n\nmovies &lt;- select(movies, movie, release_date, production_budget, worldwide_gross)\nmovies &lt;- distinct(movies)\nmovies &lt;- filter(movies, worldwide_gross &gt; 0)\nEach point shows one film. Both axes use millions of US dollars.\nggplot(movies, aes(x = production_budget / 1000000,\n                  y = worldwide_gross / 1000000)) +\n  geom_point(color = \"steelblue\", alpha = 0.4) +\n  labs(\n    title = \"Movie budgets and box office revenue\",\n    x = \"Production budget (US$ millions)\",\n    y = \"Worldwide box office (US$ millions)\"\n  )\nFilms with bigger budgets tend to bring in more at the box office, but the points spread out. Films with close budgets can have very different ticket sales. Minions, for example, had a budget of $74 million and brought in about $1.16 billion worldwide."
-  },
-  {
-    "objectID": "movies.html#sources",
-    "href": "movies.html#sources",
-    "title": "Movie Budgets",
-    "section": "Sources",
-    "text": "Sources\n\nTidyTuesday\nCSV data\nOriginal data from The Numbers"
-  },
-  {
     "objectID": "suits.html",
     "href": "suits.html",
     "title": "Who gets mentioned in Suits?",
     "section": "",
     "text": "Who gets mentioned the most in Suits episode summaries? Does that change from season to season?\nThis project uses 134 episode summaries from TVmaze, covering all nine seasons. I checked for six characters by first name. A name counts once per summary, even if it shows up more than once. This tells us who the summaries mention. It doesn’t tell us how much screen time they get."
-  },
-  {
-    "objectID": "suits.html#prepare-the-data",
-    "href": "suits.html#prepare-the-data",
-    "title": "Who gets mentioned in Suits?",
-    "section": "Prepare the data",
-    "text": "Prepare the data\n\nlibrary(tidyverse)\n\nsuits &lt;- read_csv(\"data/suits_episodes.csv\")\n\nsuits &lt;- suits |&gt;\n  mutate(\n    text = str_replace_all(summary, \"&lt;[^&gt;]+&gt;\", \" \"),\n    text = str_to_lower(text),\n    season = str_extract(url, \"(?&lt;=suits-)\\\\d+(?=x)\")\n  )\n\n\nsuits &lt;- suits |&gt;\n  mutate(\n    Harvey = str_detect(text, \"\\\\bharvey\\\\b\"),\n    Mike = str_detect(text, \"\\\\bmike\\\\b\"),\n    Louis = str_detect(text, \"\\\\blouis\\\\b\"),\n    Donna = str_detect(text, \"\\\\bdonna\\\\b\"),\n    Jessica = str_detect(text, \"\\\\bjessica\\\\b\"),\n    Rachel = str_detect(text, \"\\\\brachel\\\\b\")\n  )\n\nmentions &lt;- suits |&gt;\n  select(season, Harvey, Mike, Louis, Donna, Jessica, Rachel) |&gt;\n  pivot_longer(\n    cols = Harvey:Rachel,\n    names_to = \"character\",\n    values_to = \"mentioned\"\n  )"
-  },
-  {
-    "objectID": "suits.html#which-characters-appear-most-often",
-    "href": "suits.html#which-characters-appear-most-often",
-    "title": "Who gets mentioned in Suits?",
-    "section": "Which characters appear most often?",
-    "text": "Which characters appear most often?\n\noverall &lt;- mentions |&gt;\n  group_by(character) |&gt;\n  summarise(episodes = sum(mentioned))\n\nggplot(overall, aes(x = episodes,\n                    y = fct_reorder(character, episodes))) +\n  geom_point(color = \"navy\", size = 3) +\n  labs(\n    title = \"Harvey appears in the most episode summaries\",\n    x = \"Episode summaries mentioning the character (out of 134)\",\n    y = \"Character\"\n  )\n\n\n\n\n\n\n\n\nHarvey gets mentioned the most, showing up in 123 of the 134 summaries. Mike comes next with 96, then Louis with 86. Rachel has 50, Jessica has 45, and Donna has 39. Some characters are in the show for more seasons than others, so they have more chances to be mentioned."
-  },
-  {
-    "objectID": "suits.html#how-do-mentions-change-by-season",
-    "href": "suits.html#how-do-mentions-change-by-season",
-    "title": "Who gets mentioned in Suits?",
-    "section": "How do mentions change by season?",
-    "text": "How do mentions change by season?\n\nby_season &lt;- mentions |&gt;\n  filter(character %in% c(\"Harvey\", \"Mike\", \"Louis\")) |&gt;\n  group_by(season, character) |&gt;\n  summarise(\n    episodes = n(),\n    mentions = sum(mentioned),\n    percent = 100 * mentions / episodes\n  )\n\nggplot(by_season,\n       aes(x = season, y = percent, color = character,\n           group = character)) +\n  geom_line() +\n  geom_point() +\n  labs(\n    title = \"Character mentions change across seasons\",\n    x = \"Season\",\n    y = \"Episode summaries mentioning the character (%)\",\n    color = \"Character\"\n  )\n\n\n\n\n\n\n\n\nThe seasons have different numbers of episodes, so this plot uses percentages. Harvey shows up in at least 80% of the summaries each season. The biggest change is Mike: he goes from being mentioned in every summary in season 7 to none in season 8, then two out of ten in season 9. Louis gets mentioned most often in seasons 6 and 7, appearing in 15 out of 16 summaries in each."
-  },
-  {
-    "objectID": "suits.html#sources",
-    "href": "suits.html#sources",
-    "title": "Who gets mentioned in Suits?",
-    "section": "Sources",
-    "text": "Sources\n\nTVmaze contributors. (n.d.). Suits episode information and summaries. Retrieved October 14, 2026, from the episode list and episode data API.\nThe CSV is a reformatted subset of TVmaze data, shared under CC BY-SA 4.0. See TVmaze’s licensing terms."
   },
   {
     "objectID": "suits.html#get-the-data-ready",
@@ -110,5 +47,117 @@
     "title": "Who gets mentioned in Suits?",
     "section": "Where the data came from",
     "text": "Where the data came from\n\nTVmaze contributors. (n.d.). Suits episode information and summaries. Retrieved October 14, 2026, from the episode list and episode data API.\nThe CSV file uses selected fields from TVmaze’s data. The data are shared under CC BY-SA 4.0. See TVmaze’s licensing terms."
+  },
+  {
+    "objectID": "movies.html",
+    "href": "movies.html",
+    "title": "Movie Budgets",
+    "section": "",
+    "text": "Do films with bigger budgets earn more at the box office? I used TidyTuesday data from October 23, 2018 to look at film budgets and ticket sales. The data come from The Numbers.\nI removed one repeated row and kept films with box office totals above zero. This leaves 3,364 films from 1936 to 2018. The dollar amounts do not account for inflation.\nlibrary(tidyverse)\n\nmovies &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2018/2018-10-23/movie_profit.csv')\n\nmovies &lt;- select(movies, movie, release_date, production_budget, worldwide_gross)\nmovies &lt;- distinct(movies)\nmovies &lt;- filter(movies, worldwide_gross &gt; 0)\nEach point shows one film. Both axes use millions of US dollars.\nggplot(movies, aes(x = production_budget / 1000000,\n                  y = worldwide_gross / 1000000)) +\n  geom_point(color = \"steelblue\", alpha = 0.4) +\n  labs(\n    title = \"Movie budgets and box office revenue\",\n    x = \"Production budget (US$ millions)\",\n    y = \"Worldwide box office (US$ millions)\"\n  )\nFilms with bigger budgets tend to bring in more at the box office, but the points spread out. Films with close budgets can have very different ticket sales. Minions, for example, had a budget of $74 million and brought in about $1.16 billion worldwide."
+  },
+  {
+    "objectID": "movies.html#sources",
+    "href": "movies.html#sources",
+    "title": "Movie Budgets",
+    "section": "Sources",
+    "text": "Sources\n\nTidyTuesday\nCSV data\nOriginal data from The Numbers"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Sanskar Bachani",
+    "section": "",
+    "text": "Hi, I’m Sanskar Bachani. I’m a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.\nThis site has my data projects for the class. You can find the code for this site on GitHub."
+  },
+  {
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "Sanskar Bachani",
+    "section": "",
+    "text": "Hi, I’m Sanskar Bachani. I’m a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.\nThis site has my data projects for the class. You can find the code for this site on GitHub."
+  },
+  {
+    "objectID": "index.html#data-viz",
+    "href": "index.html#data-viz",
+    "title": "Sanskar Bachani",
+    "section": "Data Viz",
+    "text": "Data Viz\n\nOlympic Basketball\nHow did player ages differ across men’s basketball teams in 2016?\n\n\nMovie Budgets\nDo films with bigger budgets earn more at the box office?\n\n\nSuits\nWhich characters get mentioned most in episode summaries, and how does that change by season?\nEach page includes the R code for its plots."
+  },
+  {
+    "objectID": "mls-inequality.html",
+    "href": "mls-inequality.html",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "",
+    "text": "Does spending a larger share of the payroll on three players go along with better team performance? To look at this, I will find how much of each MLS club’s guaranteed compensation goes to its three highest-paid players. Using data from 2020 to 2026, I will compare average expected goal difference per match for clubs with higher salary concentration and clubs with lower salary concentration. I will then shuffle the performance values to see whether the difference could reasonably show up by chance."
+  },
+  {
+    "objectID": "mls-inequality.html#the-question",
+    "href": "mls-inequality.html#the-question",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "",
+    "text": "Does spending a larger share of the payroll on three players go along with better team performance? To look at this, I will find how much of each MLS club’s guaranteed compensation goes to its three highest-paid players. Using data from 2020 to 2026, I will compare average expected goal difference per match for clubs with higher salary concentration and clubs with lower salary concentration. I will then shuffle the performance values to see whether the difference could reasonably show up by chance."
+  },
+  {
+    "objectID": "mls-inequality.html#understanding-the-data",
+    "href": "mls-inequality.html#understanding-the-data",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "Understanding the data",
+    "text": "Understanding the data\nThe salary data come from the MLS Players Association (MLSPA), through American Soccer Analysis (ASA). ASA also provides the expected goals data. Each salary row is a player listed for a club in one season’s release; each performance row is a club-season pairing, such as NYCFC in 2025. I join them using team ID and year.\nGuaranteed compensation includes base salary and annualized guaranteed bonuses and other guaranteed compensation. It differs from the budget charge, the amount counted toward the league salary budget. I measure salary concentration as the three highest-paid players’ combined compensation divided by total club compensation. These players are not necessarily official designated players (DPs).\nExpected goals (xG) measure scoring-chance quality using estimated probabilities that shots become goals. Expected goals conceded measure the chances allowed to opponents. Expected goal difference per match (xGD per match) is xG for minus xG against, divided by matches played. This covers attack and defense while accounting for different numbers of matches."
+  },
+  {
+    "objectID": "mls-inequality.html#prepare-the-data",
+    "href": "mls-inequality.html#prepare-the-data",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "Prepare the data",
+    "text": "Prepare the data\nI calculate total compensation and compensation for the top three players in each club-season, then join these summaries to regular-season performance. The salary file uses only the latest available release each year to avoid counting players twice.\n\n\nCode\nlibrary(tidyverse)\nset.seed(47)\n\nsalaries &lt;- read_csv(\"data/mls_salary_snapshots.csv\")\nperformance &lt;- read_csv(\"data/mls_team_performance.csv\")\nteams &lt;- read_csv(\"data/mls_teams.csv\")\n\npayroll &lt;- salaries |&gt;\n  group_by(year, team_id) |&gt;\n  summarize(total_pay = sum(guaranteed_compensation),\n            players = n(), .groups = \"drop\")\n\ntop_three &lt;- salaries |&gt;\n  group_by(year, team_id) |&gt;\n  slice_max(guaranteed_compensation, n = 3, with_ties = FALSE) |&gt;\n  summarize(top_three_pay = sum(guaranteed_compensation),\n            .groups = \"drop\")\n\nclub_seasons &lt;- payroll |&gt;\n  inner_join(top_three, by = c(\"year\", \"team_id\")) |&gt;\n  inner_join(performance, by = c(\"year\", \"team_id\")) |&gt;\n  filter(total_pay &gt; 0, players &gt;= 3, matches &gt; 0) |&gt;\n  mutate(top_three_share = top_three_pay / total_pay,\n         xgd_per_match = (xg_for - xg_against) / matches) |&gt;\n  left_join(teams, by = \"team_id\")\n\ncoverage &lt;- club_seasons |&gt;\n  group_by(year) |&gt;\n  summarize(clubs = n(), fewest_matches = min(matches),\n            most_matches = max(matches), .groups = \"drop\")\nknitr::kable(coverage)\n\n\n\n\n\nyear\nclubs\nfewest_matches\nmost_matches\n\n\n\n\n2020\n26\n15\n23\n\n\n2021\n27\n34\n34\n\n\n2022\n27\n34\n34\n\n\n2023\n29\n34\n34\n\n\n2024\n29\n34\n34\n\n\n2025\n30\n34\n34\n\n\n2026\n30\n33\n33\n\n\n\n\n\nThe table shows the number of clubs and range of matches each year. The 2020 season was shortened, and 2026 is incomplete, so some averages use fewer matches. Salary lists are also snapshots, rather than records of who played in every match."
+  },
+  {
+    "objectID": "mls-inequality.html#make-the-two-groups",
+    "href": "mls-inequality.html#make-the-two-groups",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "Make the two groups",
+    "text": "Make the two groups\nI average salary concentration and xGD per match across each club’s available seasons, giving each season equal weight. This leaves one row per club instead of treating its repeated seasons as independent observations. I split clubs at the median salary share, using salary data alone to decide the groups.\n\n\nCode\nclubs &lt;- club_seasons |&gt;\n  group_by(team_id, team_name) |&gt;\n  summarize(salary_share = mean(top_three_share),\n            performance = mean(xgd_per_match),\n            seasons = n(), .groups = \"drop\")\n\ncutoff &lt;- median(clubs$salary_share)\nclubs &lt;- clubs |&gt;\n  mutate(group = ifelse(salary_share &gt; cutoff,\n                        \"Higher concentration\", \"Lower concentration\"))\n\ngroup_summary &lt;- clubs |&gt;\n  group_by(group) |&gt;\n  summarize(clubs = n(), mean_xgd = mean(performance), .groups = \"drop\")\nknitr::kable(group_summary)\n\n\n\n\n\ngroup\nclubs\nmean_xgd\n\n\n\n\nHigher concentration\n15\n-0.0195721\n\n\nLower concentration\n15\n0.0076916\n\n\n\n\n\nCode\nobserved_difference &lt;- mean(clubs$performance[clubs$group == \"Higher concentration\"]) -\n  mean(clubs$performance[clubs$group == \"Lower concentration\"])\n\n\nThere are 198 club-season records and 30 clubs. The dividing salary share is 40.3%; clubs above it are in the group with higher salary concentration, and clubs at or below it are in the group with lower salary concentration. These labels are relative to this dataset, not official MLS categories. Clubs have between 2 and 7 seasons of coverage."
+  },
+  {
+    "objectID": "mls-inequality.html#how-do-the-groups-compare",
+    "href": "mls-inequality.html#how-do-the-groups-compare",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "How do the groups compare?",
+    "text": "How do the groups compare?\nI use a boxplot to see whether performance differs between the two groups. Each point is one club, showing the spread of performance within each group.\n\n\nCode\nggplot(clubs, aes(x = group, y = performance)) +\n  geom_boxplot(outlier.shape = NA, fill = \"lightblue\") +\n  geom_point(position = position_jitter(width = 0.08, height = 0),\n             alpha = 0.7) +\n  labs(title = \"Do clubs with more concentrated salaries perform differently?\",\n       subtitle = \"Each point is a club average over available 2020-2026 seasons\",\n       x = \"Top-three salary concentration group\",\n       y = \"Average expected goal difference per match\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nHigher points represent clubs that create better chances than they allow. The table above gives the group means, while the plot shows how much club performance varies around them. The observed difference, calculated as higher concentration minus lower concentration, is -0.027 expected goals per match."
+  },
+  {
+    "objectID": "mls-inequality.html#hypotheses-and-simulation",
+    "href": "mls-inequality.html#hypotheses-and-simulation",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "Hypotheses and simulation",
+    "text": "Hypotheses and simulation\nH₀: Null hypothesis. Clubs with higher salary concentration and clubs with lower salary concentration have the same mean xGD per match. Any observed difference in the group means is due to chance under the null model.\nHₐ: Alternative hypothesis. Clubs with higher salary concentration and clubs with lower salary concentration have different mean xGD per match.\nThis is a two-sided test because either group could have the higher mean.\nThe test statistic is the difference in group means: higher concentration minus lower concentration. My function uses sample() without replacement to shuffle performance values, keeps group sizes fixed, and calculates a new difference. I use map_dbl() to repeat it 10,000 times, building a null distribution of differences expected by chance.\n\n\nCode\nshuffle_difference &lt;- function(rep) {\n  shuffled &lt;- clubs |&gt;\n    mutate(performance_shuffled = sample(performance, replace = FALSE))\n\n  higher_mean &lt;- shuffled |&gt;\n    filter(group == \"Higher concentration\") |&gt;\n    summarize(average = mean(performance_shuffled)) |&gt;\n    pull(average)\n\n  lower_mean &lt;- shuffled |&gt;\n    filter(group == \"Lower concentration\") |&gt;\n    summarize(average = mean(performance_shuffled)) |&gt;\n    pull(average)\n\n  higher_mean - lower_mean\n}\n\nnull_results &lt;- tibble(\n  difference = map_dbl(1:10000, shuffle_difference)\n)\n\np_value &lt;- mean(abs(null_results$difference) &gt;= abs(observed_difference))"
+  },
+  {
+    "objectID": "mls-inequality.html#compare-the-result-with-the-null-distribution",
+    "href": "mls-inequality.html#compare-the-result-with-the-null-distribution",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "Compare the result with the null distribution",
+    "text": "Compare the result with the null distribution\nThe histogram shows differences in means from the shuffled datasets, with the observed difference marked in red. For the two-sided p-value, I count simulated differences at least as far from zero as the observed one.\n\n\nCode\nggplot(null_results, aes(x = difference)) +\n  geom_histogram(bins = 40, fill = \"steelblue\", color = \"white\") +\n  geom_vline(xintercept = observed_difference, color = \"red\", linewidth = 1) +\n  labs(title = \"Differences in performance under the null hypothesis\",\n       subtitle = \"Red line: observed difference in group means\",\n       x = \"Mean xGD per match: higher minus lower concentration\",\n       y = \"Number of simulations\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nThe simulated p-value is 0.7259. In other words, about 72.6% of the shuffled datasets produced a difference at least as far from zero as the actual one. This describes how unusual our statistic is under the null model; it is not the probability that the null hypothesis is true."
+  },
+  {
+    "objectID": "mls-inequality.html#what-this-can-and-cannot-tell-us",
+    "href": "mls-inequality.html#what-this-can-and-cannot-tell-us",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "What this can and cannot tell us",
+    "text": "What this can and cannot tell us\nThese observational data cannot show that salary concentration causes performance to change. Total payroll, player quality, coaching, and injuries could also matter. Splitting clubs at the median also loses some detail about their salary shares.\nThe simulation assumes performance values can be shuffled between groups under the null. This is an approximation because clubs play each other and have different years of coverage. The shorter 2020 season and partial 2026 season also limit the comparison. The findings describe the MLS clubs and seasons in these files, rather than all soccer clubs or future seasons."
+  },
+  {
+    "objectID": "mls-inequality.html#conclusion",
+    "href": "mls-inequality.html#conclusion",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "Conclusion",
+    "text": "Conclusion\nI compared MLS clubs using the share of guaranteed compensation paid to their three highest-paid players and their average expected goal difference per match. I divided clubs into the two salary concentration groups and used a function with map_dbl() to simulate 10,000 shuffled differences in means. The observed difference was -0.027 expected goals per match, and the simulated two-sided p-value was 0.7259. At a 0.05 cutoff, this does not provide sufficient evidence to reject the null model, while the observational data and uneven season coverage limit what we can conclude about roster strategy."
+  },
+  {
+    "objectID": "mls-inequality.html#sources",
+    "href": "mls-inequality.html#sources",
+    "title": "MLS Salary Concentration and Team Performance",
+    "section": "Sources",
+    "text": "Sources\n\nSalary data: MLS Players Association Salary Guide, retrieved through American Soccer Analysis. The latest available release within each year was retained; records without team IDs or compensation were excluded.\nPerformance data: American Soccer Analysis, the source of expected-goals estimates and regular-season team aggregates.\nData links: ASA player salary data, example for 2024, ASA regular-season team xG data, example for 2024, and ASA team names and IDs. The salary and performance requests were repeated for 2020-2026. The input CSV files are stored in this website’s data folder.\nMethods: Class notes: permutation tests, especially the two-sample test using shuffled outcomes, differences in means, and repeated simulations."
   }
 ]
