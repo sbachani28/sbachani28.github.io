@@ -18,7 +18,7 @@
     "href": "suits.html",
     "title": "Who gets mentioned in Suits?",
     "section": "",
-    "text": "Who gets mentioned the most in Suits episode summaries? Does that change from season to season?\nThis project uses 134 episode summaries from TVmaze, covering all nine seasons. I checked for six characters by first name. A name counts once per summary, even if it shows up more than once. This tells us who the summaries mention. It doesn’t tell us how much screen time they get."
+    "text": "Who gets mentioned the most in Suits episode summaries? Does that change from season to season?\nThis project uses 134 episode summaries from TVmaze, covering all nine seasons. I checked for six characters by first name. A name counts once per summary, even if it shows up more than once. This tells us who the summaries mention. It doesn’t tell us how much screen time they get.\nEach of the 134 rows is one episode, not a line of dialogue. The five original variables are id (episode ID), name (episode title), url (episode page), airdate, and summary (a short description of the episode). The dataset contains summaries, not full scripts or dialogue. I use the episode URL to identify the season and the summary to check for character names."
   },
   {
     "objectID": "suits.html#get-the-data-ready",
@@ -32,14 +32,14 @@
     "href": "suits.html#who-gets-mentioned-the-most",
     "title": "Who gets mentioned in Suits?",
     "section": "Who gets mentioned the most?",
-    "text": "Who gets mentioned the most?\n\noverall &lt;- mentions |&gt;\n  group_by(character) |&gt;\n  summarise(episodes = sum(mentioned))\n\nggplot(overall, aes(x = episodes,\n                    y = fct_reorder(character, episodes))) +\n  geom_point(color = \"navy\", size = 3) +\n  labs(\n    title = \"Harvey gets mentioned the most\",\n    x = \"Summaries with their name (out of 134)\",\n    y = \"Character\"\n  )\n\n\n\n\n\n\n\n\nHarvey is first with 123 of the 134 summaries. Mike is next with 96, followed by Louis with 86. Rachel has 50, Jessica has 45, and Donna has 39. Some characters stay on the show longer, which gives them more chances to show up in a summary."
+    "text": "Who gets mentioned the most?\nI first compare all six characters to see whose names appear most often across the episode summaries. Counting summaries rather than every mention keeps a name repeated within one summary from adding extra weight.\n\noverall &lt;- mentions |&gt;\n  group_by(character) |&gt;\n  summarise(episodes = sum(mentioned))\n\nggplot(overall, aes(x = episodes,\n                    y = fct_reorder(character, episodes))) +\n  geom_point(color = \"navy\", size = 3) +\n  labs(\n    title = \"Harvey gets mentioned the most\",\n    x = \"Summaries with their name (out of 134)\",\n    y = \"Character\"\n  )\n\n\n\n\n\n\n\n\nHarvey is first with 123 of the 134 summaries. Mike is next with 96, followed by Louis with 86. Rachel has 50, Jessica has 45, and Donna has 39. Some characters stay on the show longer, which gives them more chances to show up in a summary."
   },
   {
     "objectID": "suits.html#does-this-change-by-season",
     "href": "suits.html#does-this-change-by-season",
     "title": "Who gets mentioned in Suits?",
     "section": "Does this change by season?",
-    "text": "Does this change by season?\n\nby_season &lt;- mentions |&gt;\n  filter(character %in% c(\"Harvey\", \"Mike\", \"Louis\")) |&gt;\n  group_by(season, character) |&gt;\n  summarise(\n    episodes = n(),\n    mentions = sum(mentioned),\n    percent = 100 * mentions / episodes\n  )\n\nggplot(by_season,\n       aes(x = season, y = percent, color = character,\n           group = character)) +\n  geom_line() +\n  geom_point() +\n  labs(\n    title = \"Harvey, Mike, and Louis by season\",\n    x = \"Season\",\n    y = \"Summaries with their name (%)\",\n    color = \"Character\"\n  )\n\n\n\n\n\n\n\n\nSome seasons have more episodes than others, so I used percentages to compare them. Harvey is in at least 80% of the summaries in every season. Mike has the biggest drop. He is in every summary in season 7, none in season 8, and two of the ten in season 9. Louis is at his highest in seasons 6 and 7, with 15 of the 16 summaries in each."
+    "text": "Does this change by season?\nThe overall totals can hide changes as characters enter or leave the show. I compare Harvey, Mike, and Louis across seasons to see whether their prominence in the summaries stays consistent. I use percentages because seasons have different numbers of episodes.\n\nby_season &lt;- mentions |&gt;\n  filter(character %in% c(\"Harvey\", \"Mike\", \"Louis\")) |&gt;\n  group_by(season, character) |&gt;\n  summarise(\n    episodes = n(),\n    mentions = sum(mentioned),\n    percent = 100 * mentions / episodes\n  )\n\nggplot(by_season,\n       aes(x = season, y = percent, color = character,\n           group = character)) +\n  geom_line() +\n  geom_point() +\n  labs(\n    title = \"Harvey, Mike, and Louis by season\",\n    x = \"Season\",\n    y = \"Summaries with their name (%)\",\n    color = \"Character\"\n  )\n\n\n\n\n\n\n\n\nSome seasons have more episodes than others, so I used percentages to compare them. Harvey is in at least 80% of the summaries in every season. Mike has the biggest drop. He is in every summary in season 7, none in season 8, and two of the ten in season 9. Louis is at his highest in seasons 6 and 7, with 15 of the 16 summaries in each.\nMike’s drop fits a change in the cast: Patrick J. Adams left the regular cast after season 7 and returned as a guest in season 9, according to USA Network. This helps explain why Mike disappears from the season 8 summaries and appears again in season 9. It also shows why the totals need context: fewer summary mentions can reflect a character leaving the show, rather than becoming less important while still appearing regularly. A summary can also leave out a character who appears in the episode, so mentions are not a direct measure of screen time."
   },
   {
     "objectID": "suits.html#where-the-data-came-from",
@@ -159,5 +159,12 @@
     "title": "MLS Salary Concentration and Team Performance",
     "section": "Sources",
     "text": "Sources\n\nSalary data: MLS Players Association Salary Guide, retrieved through American Soccer Analysis. The latest available release within each year was retained; records without team IDs or compensation were excluded.\nPerformance data: American Soccer Analysis, the source of expected-goals estimates and regular-season team aggregates.\nData links: ASA player salary data, example for 2024, ASA regular-season team xG data, example for 2024, and ASA team names and IDs. The salary and performance requests were repeated for 2020-2026. The input CSV files are stored in this website’s data folder.\nMethods: Class notes: permutation tests, especially the two-sample test using shuffled outcomes, differences in means, and repeated simulations."
+  },
+  {
+    "objectID": "index.html#class-projects",
+    "href": "index.html#class-projects",
+    "title": "Sanskar Bachani",
+    "section": "Class projects",
+    "text": "Class projects\nUse the Data Viz menu above to explore my projects. Each page includes the R code and data sources."
   }
 ]

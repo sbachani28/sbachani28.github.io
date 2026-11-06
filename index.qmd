@@ -18,18 +18,6 @@ Hi, I'm Sanskar Bachani. I'm a junior at Claremont McKenna College. I like worki
 
 This site has my data projects for the class. You can find the [code for this site on GitHub](https://github.com/sbachani28/portfolio).
 
-## Data Viz
+## Class projects
 
-### [Olympic Basketball](basketball.qmd)
-
-How did player ages differ across men's basketball teams in 2016?
-
-### [Movie Budgets](movies.qmd)
-
-Do films with bigger budgets earn more at the box office?
-
-### [Suits](suits.qmd)
-
-Which characters get mentioned most in episode summaries, and how does that change by season?
-
-Each page includes the R code for its plots.
+Use the Data Viz menu above to explore my projects. Each page includes the R code and data sources.

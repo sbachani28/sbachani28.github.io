@@ -193,6 +193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>Who gets mentioned the most in Suits episode summaries? Does that change from season to season?</p>
 <p>This project uses 134 episode summaries from TVmaze, covering all nine seasons. I checked for six characters by first name. A name counts once per summary, even if it shows up more than once. This tells us who the summaries mention. It doesn’t tell us how much screen time they get.</p>
+<p>Each of the 134 rows is one episode, not a line of dialogue. The five original variables are <code>id</code> (episode ID), <code>name</code> (episode title), <code>url</code> (episode page), <code>airdate</code>, and <code>summary</code> (a short description of the episode). The dataset contains summaries, not full scripts or dialogue. I use the episode URL to identify the season and the summary to check for character names.</p>
 <section id="get-the-data-ready" class="level2">
 <h2 class="anchored" data-anchor-id="get-the-data-ready">Get the data ready</h2>
 <div class="cell">
@@ -229,6 +230,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="who-gets-mentioned-the-most" class="level2">
 <h2 class="anchored" data-anchor-id="who-gets-mentioned-the-most">Who gets mentioned the most?</h2>
+<p>I first compare all six characters to see whose names appear most often across the episode summaries. Counting summaries rather than every mention keeps a name repeated within one summary from adding extra weight.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>overall <span class="ot">&lt;-</span> mentions <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(character) <span class="sc">|&gt;</span></span>
@@ -254,6 +256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="does-this-change-by-season" class="level2">
 <h2 class="anchored" data-anchor-id="does-this-change-by-season">Does this change by season?</h2>
+<p>The overall totals can hide changes as characters enter or leave the show. I compare Harvey, Mike, and Louis across seasons to see whether their prominence in the summaries stays consistent. I use percentages because seasons have different numbers of episodes.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>by_season <span class="ot">&lt;-</span> mentions <span class="sc">|&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(character <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Harvey"</span>, <span class="st">"Mike"</span>, <span class="st">"Louis"</span>)) <span class="sc">|&gt;</span></span>
@@ -284,6 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Some seasons have more episodes than others, so I used percentages to compare them. Harvey is in at least 80% of the summaries in every season. Mike has the biggest drop. He is in every summary in season 7, none in season 8, and two of the ten in season 9. Louis is at his highest in seasons 6 and 7, with 15 of the 16 summaries in each.</p>
+<p>Mike’s drop fits a change in the cast: Patrick J. Adams left the regular cast after season 7 and returned as a guest in season 9, according to <a href="https://www.usanetwork.com/usa-insider/why-did-patrick-j-adams-mike-ross-leave-suits-before-finale">USA Network</a>. This helps explain why Mike disappears from the season 8 summaries and appears again in season 9. It also shows why the totals need context: fewer summary mentions can reflect a character leaving the show, rather than becoming less important while still appearing regularly. A summary can also leave out a character who appears in the episode, so mentions are not a direct measure of screen time.</p>
 </section>
 <section id="where-the-data-came-from" class="level2">
 <h2 class="anchored" data-anchor-id="where-the-data-came-from">Where the data came from</h2>

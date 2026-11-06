@@ -13,6 +13,8 @@ Who gets mentioned the most in Suits episode summaries? Does that change from se
 
 This project uses 134 episode summaries from TVmaze, covering all nine seasons. I checked for six characters by first name. A name counts once per summary, even if it shows up more than once. This tells us who the summaries mention. It doesn’t tell us how much screen time they get.
 
+Each of the 134 rows is one episode, not a line of dialogue. The five original variables are `id` (episode ID), `name` (episode title), `url` (episode page), `airdate`, and `summary` (a short description of the episode). The dataset contains summaries, not full scripts or dialogue. I use the episode URL to identify the season and the summary to check for character names.
+
 ## Get the data ready
 
 ```{r}
@@ -50,6 +52,8 @@ mentions <- suits |>
 
 ## Who gets mentioned the most?
 
+I first compare all six characters to see whose names appear most often across the episode summaries. Counting summaries rather than every mention keeps a name repeated within one summary from adding extra weight.
+
 ```{r}
 overall <- mentions |>
   group_by(character) |>
@@ -68,6 +72,8 @@ ggplot(overall, aes(x = episodes,
 Harvey is first with 123 of the 134 summaries. Mike is next with 96, followed by Louis with 86. Rachel has 50, Jessica has 45, and Donna has 39. Some characters stay on the show longer, which gives them more chances to show up in a summary.
 
 ## Does this change by season?
+
+The overall totals can hide changes as characters enter or leave the show. I compare Harvey, Mike, and Louis across seasons to see whether their prominence in the summaries stays consistent. I use percentages because seasons have different numbers of episodes.
 
 ```{r}
 by_season <- mentions |>
@@ -93,6 +99,8 @@ ggplot(by_season,
 ```
 
 Some seasons have more episodes than others, so I used percentages to compare them. Harvey is in at least 80% of the summaries in every season. Mike has the biggest drop. He is in every summary in season 7, none in season 8, and two of the ten in season 9. Louis is at his highest in seasons 6 and 7, with 15 of the 16 summaries in each.
+
+Mike's drop fits a change in the cast: Patrick J. Adams left the regular cast after season 7 and returned as a guest in season 9, according to [USA Network](https://www.usanetwork.com/usa-insider/why-did-patrick-j-adams-mike-ross-leave-suits-before-finale). This helps explain why Mike disappears from the season 8 summaries and appears again in season 9. It also shows why the totals need context: fewer summary mentions can reflect a character leaving the show, rather than becoming less important while still appearing regularly. A summary can also leave out a character who appears in the episode, so mentions are not a direct measure of screen time.
 
 ## Where the data came from
 
