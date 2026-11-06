@@ -37,13 +37,12 @@ teams <- read_csv("data/mls_teams.csv")
 payroll <- salaries |>
   group_by(year, team_id) |>
   summarize(total_pay = sum(guaranteed_compensation),
-            players = n(), .groups = "drop")
+            players = n())
 
 top_three <- salaries |>
   group_by(year, team_id) |>
   slice_max(guaranteed_compensation, n = 3, with_ties = FALSE) |>
-  summarize(top_three_pay = sum(guaranteed_compensation),
-            .groups = "drop")
+  summarize(top_three_pay = sum(guaranteed_compensation))
 
 club_seasons <- payroll |>
   inner_join(top_three, by = c("year", "team_id")) |>
@@ -56,7 +55,7 @@ club_seasons <- payroll |>
 coverage <- club_seasons |>
   group_by(year) |>
   summarize(clubs = n(), fewest_matches = min(matches),
-            most_matches = max(matches), .groups = "drop")
+            most_matches = max(matches))
 coverage
 ```
 
@@ -71,7 +70,9 @@ clubs <- club_seasons |>
   group_by(team_id, team_name) |>
   summarize(salary_share = mean(top_three_share),
             performance = mean(xgd_per_match),
-            seasons = n(), .groups = "drop")
+            seasons = n())
+
+clubs <- as.data.frame(clubs)
 
 cutoff <- median(clubs$salary_share)
 clubs <- clubs |>
@@ -80,7 +81,7 @@ clubs <- clubs |>
 
 group_summary <- clubs |>
   group_by(group) |>
-  summarize(clubs = n(), mean_xgd = mean(performance), .groups = "drop")
+  summarize(clubs = n(), mean_xgd = mean(performance))
 group_summary
 
 observed_difference <- mean(clubs$performance[clubs$group == "Higher concentration"]) -
