@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    - portfolio/
 
 website:
   title: "Sanskar Bachani"

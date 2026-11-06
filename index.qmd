@@ -8,7 +8,7 @@ about:
   image-width: 25em
   links:
     - text: GitHub repository
-      href: https://github.com/sbachani28/portfolio
+      href: https://github.com/sbachani28/sbachani28.github.io
       target: _blank
 ---
 
@@ -16,7 +16,7 @@ about:
 
 Hi, I'm Sanskar Bachani. I'm a junior at Claremont McKenna College. I like working with data. I made this site for my Foundations of Data Science in R class.
 
-This site has my data projects for the class. You can find the [code for this site on GitHub](https://github.com/sbachani28/portfolio).
+This site has my data projects for the class. You can find the [code for this site on GitHub](https://github.com/sbachani28/sbachani28.github.io).
 
 ## Class projects
 
