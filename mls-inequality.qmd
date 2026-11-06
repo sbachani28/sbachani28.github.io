@@ -57,7 +57,7 @@ coverage <- club_seasons |>
   group_by(year) |>
   summarize(clubs = n(), fewest_matches = min(matches),
             most_matches = max(matches), .groups = "drop")
-knitr::kable(coverage)
+coverage
 ```
 
 The table shows the number of clubs and range of matches each year. The 2020 season was shortened, and 2026 is incomplete, so some averages use fewer matches. Salary lists are also snapshots, rather than records of who played in every match.
@@ -81,7 +81,7 @@ clubs <- clubs |>
 group_summary <- clubs |>
   group_by(group) |>
   summarize(clubs = n(), mean_xgd = mean(performance), .groups = "drop")
-knitr::kable(group_summary)
+group_summary
 
 observed_difference <- mean(clubs$performance[clubs$group == "Higher concentration"]) -
   mean(clubs$performance[clubs$group == "Lower concentration"])
